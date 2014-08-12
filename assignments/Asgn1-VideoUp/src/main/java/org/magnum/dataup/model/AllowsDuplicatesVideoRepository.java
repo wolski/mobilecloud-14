@@ -41,7 +41,11 @@ public class AllowsDuplicatesVideoRepository implements VideoRepository {
 	}
 	
 	public Video findVidByID(long id){
-		return  videoList.get((int) id);
+		--id;
+		if(id >= 0 && id < videoList.size())
+			return  videoList.get((int) id);
+		else
+			return null;
 	}
 
 	

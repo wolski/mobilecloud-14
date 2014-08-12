@@ -16,10 +16,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 
 
+
+
 import javax.servlet.http.HttpServletRequest;
 
 
 import javax.servlet.http.HttpServletResponse;
+
+
 
 
 //import org.magnum.mobilecloud.video.client.VideoSvcApi;
@@ -27,6 +31,8 @@ import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
 import org.magnum.dataup.model.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -77,6 +83,7 @@ public class VideoSvcController // implements VideoSvcApi
 		//				.withDuration(123).withSubject(UUID.randomUUID().toString())
 		//				.withTitle(UUID.randomUUID().toString()).build();
 		v = videos.addVideo(v);
+		v.setDataUrl(getDataUrl(v.getId()));
 		return v;
 		//return videos.addVideo(v);
 	}
@@ -112,21 +119,23 @@ public class VideoSvcController // implements VideoSvcApi
 	 */
 	//@Override
 	@RequestMapping(value=VideoSvcApi.VIDEO_DATA_PATH, method=RequestMethod.POST)
-	public @ResponseBody VideoStatus setVideoData(
+	public @ResponseBody ResponseEntity<VideoStatus> setVideoData(
 			@PathVariable(VideoSvcApi.ID_PARAMETER) long id,
 			@RequestParam(VideoSvcApi.DATA_PARAMETER)MultipartFile videoData) {
 		
 		try {
 			videoDataMgr = VideoFileManager.get();
-			Video video = videos.findVidByID(id);
+			Video video = null;
+			video = videos.findVidByID(id);
 			videoDataMgr.saveVideoData(video, videoData.getInputStream());
 		} catch (IOException e) {
+			//response.sendError(404, ERROR_MSG);
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
 		VideoStatus vs = new VideoStatus(VideoStatus.VideoState.READY);
-		return vs;
+		return new ResponseEntity<VideoStatus>(vs,HttpStatus.OK);
 	}
 
 	/*
