@@ -101,7 +101,8 @@ public class VideoSvcController // implements VideoSvcApi
 	@RequestMapping(value=VideoSvcApi.VIDEO_SVC_PATH, method=RequestMethod.GET)
 	public @ResponseBody Collection<Video> getVideoList(){
 		//return videos.getVideos();
-		return videos.getVideos();
+		Collection<Video> bla = videos.getVideos();
+		return bla;
 	}
 	/* POST /video/{id}/data
    - The binary mpeg data for the video should be provided in a multipart
