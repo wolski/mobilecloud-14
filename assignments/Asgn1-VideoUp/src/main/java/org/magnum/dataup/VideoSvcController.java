@@ -18,6 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 
 
+
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -26,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
+import org.magnum.dataup.model.AllowsDuplicatesVideoRepository;
 //import org.magnum.mobilecloud.video.client.VideoSvcApi;
 import org.magnum.dataup.model.Video;
 import org.magnum.dataup.model.VideoStatus;
@@ -51,8 +54,8 @@ import retrofit.mime.TypedFile;
 public class VideoSvcController // implements VideoSvcApi  
 {
 
-	@Autowired
-	private VideoRepository videos;
+	//@Autowired
+	private VideoRepository videos = new AllowsDuplicatesVideoRepository();
 	private VideoFileManager videoDataMgr;
 	
 	/* POST /video
@@ -100,7 +103,6 @@ public class VideoSvcController // implements VideoSvcApi
 	 */
 	@RequestMapping(value=VideoSvcApi.VIDEO_SVC_PATH, method=RequestMethod.GET)
 	public @ResponseBody Collection<Video> getVideoList(){
-		//return videos.getVideos();
 		Collection<Video> bla = videos.getVideos();
 		return bla;
 	}
@@ -145,14 +147,28 @@ public class VideoSvcController // implements VideoSvcApi
 	     identifier. If no mpeg data has been uploaded for the specified video,
 	     then the server should return a 404 status code.
 	 */
-	public void  getData(@RequestParam(VideoSvcApi.ID_PARAMETER) long id, HttpServletResponse hsr) {
-		// TODO Auto-generated method stub
+	//@RequestMapping(value=VideoSvcApi.VIDEO_DATA_PATH, method=RequestMethod.GET)
+    //public @ResponseBody void getData(
+    //		@PathVariable(value=VideoSvcApi.ID_PARAMETER) long id,
+    //		HttpServletResponse response 
+    //) throws IOException {
+	@RequestMapping(value=VideoSvcApi.VIDEO_DATA_PATH, method=RequestMethod.GET)
+	public @ResponseBody void getData( @PathVariable(VideoSvcApi.ID_PARAMETER) long id,
+			HttpServletResponse hsr) throws IOException {
+		int x = 1;
+		System.out.println(x);
+	   // TODO Auto-generated method stub
 		try {
 			videoDataMgr = VideoFileManager.get();
 			Video video = videos.findVidByID(id);
-			videoDataMgr.copyVideoData(video, hsr.getOutputStream());
-		} catch (IOException e) {
+			videoDataMgr.copyVideoData( video , hsr.getOutputStream() );
+		}
+		 catch (IOException e) {
 			// TODO Auto-generated catch block
+			hsr.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			e.printStackTrace();
+		}catch(Exception e){
+			hsr.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			e.printStackTrace();
 		}
 	}

@@ -142,7 +142,7 @@ public class AutoGradingTest {
 					+ "https://class.coursera.org/mobilecloud-001/lecture/71 "
 					+ "https://class.coursera.org/mobilecloud-001/lecture/207"
 			)
-	//@Test
+	@Test
 	public void testAddVideoData() throws Exception {
 		Video received = videoSvc.addVideo(video);
 		VideoStatus status = videoSvc.setVideoData(received.getId(),
@@ -171,9 +171,7 @@ public class AutoGradingTest {
 			)
 	@Test
 	public void testGetNonExistantVideosData() throws Exception {
-		
 		long nonExistantId = getInvalidVideoId();
-		
 		try{
 			Response r = videoSvc.getData(nonExistantId);
 			assertEquals(404, r.getStatus());
@@ -194,7 +192,7 @@ public class AutoGradingTest {
 					+ "https://class.coursera.org/mobilecloud-001/lecture/69 "
 					+ "https://class.coursera.org/mobilecloud-001/lecture/65"
 			)
-	//@Test
+	@Test
 	public void testAddNonExistantVideosData() throws Exception {
 		long nonExistantId = getInvalidVideoId();
 		try{
