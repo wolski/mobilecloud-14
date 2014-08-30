@@ -125,19 +125,23 @@ public class VideoSvcController // implements VideoSvcApi
 	public @ResponseBody ResponseEntity<VideoStatus> setVideoData(
 			@PathVariable(VideoSvcApi.ID_PARAMETER) long id,
 			@RequestParam(VideoSvcApi.DATA_PARAMETER)MultipartFile videoData) {
+		VideoStatus vs = new VideoStatus(VideoStatus.VideoState.READY);
 		
 		try {
 			videoDataMgr = VideoFileManager.get();
 			Video video = null;
 			video = videos.findVidByID(id);
+			if(video == null){
+				return new ResponseEntity<VideoStatus>(vs,HttpStatus.NOT_FOUND);
+			}
 			videoDataMgr.saveVideoData(video, videoData.getInputStream());
 		} catch (IOException e) {
 			//response.sendError(404, ERROR_MSG);
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 			return null;
 		}
-		VideoStatus vs = new VideoStatus(VideoStatus.VideoState.READY);
+		//VideoStatus vs = new VideoStatus(VideoStatus.VideoState.READY);
 		return new ResponseEntity<VideoStatus>(vs,HttpStatus.OK);
 	}
 
@@ -161,7 +165,11 @@ public class VideoSvcController // implements VideoSvcApi
 		try {
 			videoDataMgr = VideoFileManager.get();
 			Video video = videos.findVidByID(id);
-			videoDataMgr.copyVideoData( video , hsr.getOutputStream() );
+			if(video!=null){
+				videoDataMgr.copyVideoData( video , hsr.getOutputStream() );
+			} else {
+				hsr.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			}
 		}
 		 catch (IOException e) {
 			// TODO Auto-generated catch block
