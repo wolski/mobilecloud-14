@@ -170,10 +170,10 @@ public class AutoGradingTest {
 		readWriteVideoSvcUser1.likeVideo(v.getId());
 
 		// Get the video again
-		v = readWriteVideoSvcUser1.getVideoById(v.getId());
+		Video v2 = readWriteVideoSvcUser1.getVideoById(v.getId());
 
 		// Make sure the like count is 1
-		assertTrue(v.getLikes() == 1);
+		assertTrue(v2.getLikes() == 1);
 
 		// Unlike the video
 		readWriteVideoSvcUser1.unlikeVideo(v.getId());
@@ -284,7 +284,6 @@ public class AutoGradingTest {
 	)
 	@Test
 	public void testLikingNonExistantVideo() throws Exception {
-
 		try {
 			// Like the video again.
 			readWriteVideoSvcUser1.likeVideo(getInvalidVideoId());

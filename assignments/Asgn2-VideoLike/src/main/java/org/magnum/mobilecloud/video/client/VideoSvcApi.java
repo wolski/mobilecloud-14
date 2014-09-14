@@ -149,6 +149,9 @@ public interface VideoSvcApi {
 	// The path to search videos by title
 	public static final String VIDEO_DURATION_SEARCH_PATH = VIDEO_SVC_PATH + "/search/findByDurationLessThan";
 
+	public static final String ID_PARAMETER = "id";
+	
+
 	@GET(VIDEO_SVC_PATH)
 	public Collection<Video> getVideoList();
 	
